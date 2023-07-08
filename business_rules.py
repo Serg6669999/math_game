@@ -17,7 +17,7 @@ def mark_time(func):
 class GameRule(ABC):
 
     @abstractmethod
-    def get_user_math_action(self, math_actions: Iterable[str]) -> List[str]:
+    def choice_user_math_action(self, math_actions: Iterable[str]) -> List[str]:
         pass
 
     @abstractmethod
@@ -31,14 +31,14 @@ class GameRule(ABC):
 
     @mark_time
     def get_math_game(self, math_actions: Iterable[str], game_class):
-        user_math_action = self.get_user_math_action(math_actions)
+        user_math_action = self.choice_user_math_action(math_actions)
         sequence_of_numbers = game_class.get_random_pairs_of_numbers_with_math_action(user_math_action)
-        for data, math_action_ in sequence_of_numbers:
-            self.send_message_to_user(f"{data}, {math_action_}")
+        for numbers_for_calculations, math_action_ in sequence_of_numbers:
+            self.send_message_to_user(f"{numbers_for_calculations}, {math_action_}")
             user_answer = self.get_user_answer()
 
             maybe_answer_true, true_answer = game_class.check_answer(
-                math_action_, user_answer, data)
+                math_action_, user_answer, numbers_for_calculations)
 
             if maybe_answer_true:
                 self.send_message_to_user("ok")
