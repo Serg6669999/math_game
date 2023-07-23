@@ -1,3 +1,4 @@
+import time
 from typing import Iterable, List
 
 
@@ -6,8 +7,14 @@ class ConsoleInterface:
         user_math_action = input(f"choice math action: {math_actions}")
         return user_math_action.split(",")
 
-    def send_message_to_user(self, message: str):
-        return print(message)
+    def send_message_to_user(self, message: str, show_message_time: float = None):
 
-    def get_user_answer(self) -> int:
-        return int(input())
+        if show_message_time:
+            print(message, end='')
+            time.sleep(show_message_time)
+            print('\r', '')
+        else:
+            print(message)
+
+    def get_user_answer(self) -> str:
+        return input()

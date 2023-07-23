@@ -21,7 +21,7 @@ class GameRule(ABC):
         pass
 
     @abstractmethod
-    def send_message_to_user(self, message: str):
+    def send_message_to_user(self, message: str, show_message_time: float = None):
         pass
 
     @abstractmethod
@@ -33,8 +33,13 @@ class GameRule(ABC):
     def get_math_game(self, math_actions: Iterable[str], game_class):
         user_math_action = self.choice_user_math_action(math_actions)
         sequence_of_numbers = game_class.get_random_pairs_of_numbers_with_math_action(user_math_action)
+        show_message_time = getattr(game_class, 'show_message_time', None)
+        arithmetic_number = getattr(game_class, 'arithmetic_number', '')
         for numbers_for_calculations, math_action_ in sequence_of_numbers:
-            self.send_message_to_user(f"{numbers_for_calculations}, {math_action_}")
+            self.send_message_to_user(
+                f"{numbers_for_calculations}, {math_action_} {arithmetic_number}",
+                show_message_time
+            )
             user_answer = self.get_user_answer()
 
             maybe_answer_true, true_answer = game_class.check_answer(
@@ -82,3 +87,5 @@ class TrigonometricFunctions:
 
     def atan(self):
         return math.atan(self.value)
+
+

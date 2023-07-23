@@ -1,12 +1,13 @@
 import dataclasses
 
 from Storage import Storage, StorageEntities
-from arithmetic_game import ArithmeticGame
+from arithmetic_game import FastArithmeticGame
 from user_interface.console import ConsoleInterface
 
 play = True
 while play:
-    arithmetic_game = ArithmeticGame(ConsoleInterface)
+    arithmetic_game = FastArithmeticGame(ConsoleInterface)
+    print("show_message_time", arithmetic_game.show_message_time)
     delta_time, end_time = arithmetic_game.start()
 
     storage_entities = StorageEntities(
@@ -17,5 +18,5 @@ while play:
                          arithmetic_game.Second_range_of_numbers)
        )
     Storage(storage_entities).save_to_csv_file("stats.csv")
-    print(dataclasses.asdict(storage_entities))
-    play = input("is continue?")
+    arithmetic_game.send_message_to_user(f"{storage_entities.__dict__}")
+    play = bool(input("is continue?"))
