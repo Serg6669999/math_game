@@ -1,4 +1,5 @@
 import datetime
+import time
 from abc import ABC, abstractmethod
 from typing import Iterable, List, Tuple
 import math
@@ -11,36 +12,52 @@ def mark_time(func):
         end_time = datetime.datetime.now()
         delta_time = (end_time - start_time).total_seconds()
         return delta_time, end_time
+
     return wrapper
 
 
 class GameRule(ABC):
 
     @abstractmethod
-    def choice_user_math_action(self, math_actions: Iterable[str]) -> List[str]:
+    def choice_user_action(self, actions: Iterable[str]) -> List[str]:
         pass
 
     @abstractmethod
-    def send_message_to_user(self, message: str, show_message_time: float = None):
+    def send_message_to_user(self, message: str,
+                             show_message_time: float = None):
         pass
 
     @abstractmethod
-    def get_user_answer(self) -> int:
+    def get_user_answer(self) -> str:
         pass
+
     incorrect_answers = 0
 
-    @mark_time
-    def get_math_game(self, math_actions: Iterable[str], game_class):
-        user_math_action = self.choice_user_math_action(math_actions)
-        sequence_of_numbers = game_class.get_random_pairs_of_numbers_with_math_action(user_math_action)
+    def _action_sequence_of_numbers(self, user_action, game_class,
+                                    deferred_step: int = 1):
+        self.send_message_to_user(vars(game_class))
+        time.sleep(1.1)
+        sequence_of_numbers = game_class.get_random_pairs_of_numbers_with_math_action(
+            user_action)
         show_message_time = getattr(game_class, 'show_message_time', None)
         arithmetic_number = getattr(game_class, 'arithmetic_number', '')
-        for numbers_for_calculations, math_action_ in sequence_of_numbers:
+
+        deferred_numbers_for_calculations = []
+        for i, (numbers_for_calculations_, math_action_) in enumerate(
+                sequence_of_numbers, start=1):
+
             self.send_message_to_user(
-                f"{numbers_for_calculations}, {math_action_} {arithmetic_number}",
-                show_message_time
-            )
+                f"{numbers_for_calculations_}, {math_action_} {arithmetic_number}",
+                show_message_time)
             user_answer = self.get_user_answer()
+
+            deferred_numbers_for_calculations.append(numbers_for_calculations_)
+            if i % deferred_step == 0 or len(
+                    deferred_numbers_for_calculations) == deferred_step:
+                numbers_for_calculations = deferred_numbers_for_calculations.pop(
+                    0)
+            else:
+                continue
 
             maybe_answer_true, true_answer = game_class.check_answer(
                 math_action_, user_answer, numbers_for_calculations)
@@ -49,7 +66,25 @@ class GameRule(ABC):
                 self.send_message_to_user("ok")
             else:
                 self.incorrect_answers += 1
-                self.send_message_to_user(f"{user_answer} false, true= {true_answer}")
+                self.send_message_to_user(
+                    f"{numbers_for_calculations} - {user_answer} is false, true= {true_answer}")
+                sequence_of_numbers.append((numbers_for_calculations, math_action_))
+                self.get_user_answer()
+
+    @mark_time
+    def get_math_game(self, actions: Iterable[str], game_class,
+                      deferred_step: int = 1):
+        user_math_action = self.choice_user_action(actions)
+        while True:
+            game_class.incorrect_answers = 0
+            self._action_sequence_of_numbers(user_math_action, game_class,
+                                             deferred_step)
+            message = f"incorrect_answers = {game_class.incorrect_answers}. " \
+                      f"Is next level? (yes/no)"
+            self.send_message_to_user(message)
+            user_answer = self.get_user_answer()
+            if user_answer == 'yes':
+                game_class.set_next_level()
 
 
 class ArithmeticRules:
@@ -87,5 +122,3 @@ class TrigonometricFunctions:
 
     def atan(self):
         return math.atan(self.value)
-
-

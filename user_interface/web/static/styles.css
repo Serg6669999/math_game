@@ -1,0 +1,68 @@
+h1 {
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    height: 100vh;
+    align-items: center;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+.choose_game{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: grid;
+
+}
+.button:visited {
+    color: #ad388e;
+}
+.button:focus {
+    color: aqua;
+    background-color: rgba(0, 123, 255, 0.53);
+}
+.button:active{
+    color: #0040ff;
+    background-color: rgba(38, 255, 0, 0.53);
+}
+.select {
+    padding: 5px;
+    border-radius: 5px;
+}
+.setting {
+    display: flex;
+    align-items: center;
+    margin: 5px;
+    width: 420px;
+}
+.display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+}
+.user_answer{
+    size: 10px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}

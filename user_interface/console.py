@@ -1,9 +1,10 @@
 import time
-from typing import Iterable, List
+from typing import Iterable, List, Tuple
+import re
 
 
 class ConsoleInterface:
-    def choice_user_math_action(self, math_actions: Iterable[str]) -> List[str]:
+    def choice_user_action(self, math_actions: Iterable[str]) -> List[str]:
         user_math_action = input(f"choice math action: {math_actions}")
         return user_math_action.split(",")
 
@@ -15,6 +16,9 @@ class ConsoleInterface:
             print('\r', '')
         else:
             print(message)
+
+    def extract_from_text_(self, regular: str, text: str):
+        return re.search(f'{regular}', text).group()
 
     def get_user_answer(self) -> str:
         return input()

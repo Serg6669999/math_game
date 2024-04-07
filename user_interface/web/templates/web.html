@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/styles.css">
+<title>Data Display</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script type="text/javascript" src="../static/client/socket.js" charset="utf-8">
+
+</script>
+
+</head>
+<body>
+<h1 id="message_for_user">{{ data }}</h1>
+<div class="display" id="dataDisplay">
+<!--    <form id="display">-->
+        <label for="user_answer_"></label><input type="text" name="user_answer" id="user_answer_" placeholder="Enter data" class="user_unswer">
+<!--        </form>-->
+<!--    <button id="submitButton">Submit</button>-->
+</div>
+
+
+<div class="container">
+    <form id="games" name="games" class="choose_game">
+                <h2>Games</h2>
+            <label><input type="radio" value="Arithmetic" name="game" checked/>Arithmetic</label>
+            <label><input type="radio" value="Memory+Arithmetic" name="game"/>Memory+Arithmetic</label>
+            <label><input type="radio" value="Memory" name="game"/>Memory</label>
+            <label><input type="radio" value="Words" name="game"/>Words</label>
+    </form>
+
+        <div class="column">
+            <h2>Settings</h2>
+            <div class="column">
+                <div class="setting">
+                    <span>Delayed response:</span>
+                    <select id="delayed_response">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <span>Max steps of level:</span>
+                    <select id="max_steps_of_level">
+                        <option>5</option>
+                        <option>10</option>
+                        <option>15</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <span>Entry level:</span>
+                    <input id="entry_level" type="number" name="quantity" min="1" max="10" value="1">
+
+                </div>
+
+            </div>
+            <button id="start" class="button" value="start" name="12">Start</button>
+            <button id="stop" class="button" value="stop">Stop</button>
+
+        </div>
+    </div>
+<script type="text/javascript" src="../static/client/methods.js"></script>
+</body>
+</html>

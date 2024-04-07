@@ -5,7 +5,7 @@ __pycache__/
 
 stats.csv
 /.idea
-
+notes.txt
 # Cython debug symbols
 cython_debug/
 
