@@ -1,3 +1,4 @@
+import csv
 import dataclasses
 from dataclasses import dataclass
 from typing import List
@@ -29,3 +30,27 @@ class Storage:
                                          fieldnames=title)
             file_writer.writerow(self.data.__dict__)
             # file_reader = csv.DictReader(w_file, fieldnames=title)
+
+
+class File:
+    def __init__(self, path: str, file_name: str):
+        self.path = path
+        self.file_name = file_name
+
+    def open(self):
+        self.file = open(self.path + self.file_name, "r")
+        return self.file
+
+    def read(self) -> List[dict]:
+        return list(csv.DictReader(self.file))
+
+
+    def close(self):
+        return self.file.close()
+
+    def create(self, name: str, data: List[dict]):
+        with open(self.path + name, "w", newline='') as file:
+            field_names_list = data[0].keys()
+            dict_writer = csv.DictWriter(file, field_names_list)
+            dict_writer.writeheader()
+            dict_writer.writerows(data)
