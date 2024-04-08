@@ -55,14 +55,14 @@ class Verb(GameRule):
         return self.__file.read()
 
     def choice_user_action(self, actions: Iterable[str]) -> List[str]:
-        return self.interface_class_obj.choice_user_action(self, actions)
+        return self.interface_class_obj.choice_user_action(actions)
 
     def get_user_answer(self) -> str:
-        return self.interface_class_obj.get_user_answer(self)
+        return self.interface_class_obj.get_user_answer()
 
     def send_message_to_user(self, message: str,
                              show_message_time: float = None):
-        return self.interface_class_obj.send_message_to_user(self, message,
+        return self.interface_class_obj.send_message_to_user( message,
                                                              show_message_time)
 
     def check_answer(self, action: str, answer: str, ru_word: str):

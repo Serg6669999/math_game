@@ -20,14 +20,15 @@ class MathAction(ArithmeticRules):
 
 
 class ArithmeticGame(GameRule):
-    First_range_of_numbers = (1, 9)
-    Second_range_of_numbers = (1, 9)
-    show_message_time = 0.9
-    max_steps = 7
-    level = 1
+
 
     def __init__(self, interface_class):
         self.interface_class_obj = interface_class
+        self.First_range_of_numbers = (1, 9)
+        self.Second_range_of_numbers = (1, 9)
+        self.show_message_time = 0.9
+        self.max_steps = 7
+        self.level = 1
 
     def check_answer(self, math_action: str, answer: str,
                      data: Tuple[int, int]):
@@ -63,7 +64,8 @@ class ArithmeticGame(GameRule):
         return number % 2 == 0
 
     def _get_level_ratio(self, level):
-        if self._is_even_numbered(level):
+        even_numbered = self._is_even_numbered(level)
+        if even_numbered:
             first_ratio, second_ratio = 1, 0
         else:
             first_ratio, second_ratio = 0, 1
@@ -74,8 +76,7 @@ class ArithmeticGame(GameRule):
 
         if self.incorrect_answers < 3:
             first_ratio, second_ratio = self._get_level_ratio(self.level)
-            setattr(ArithmeticGame, 'level', self.level + 1)
-
+            self.level += 1
             self.First_range_of_numbers = [i + first_ratio * 10 for i in
                                            self.First_range_of_numbers]
             self.Second_range_of_numbers = [i + second_ratio * 10 for i in

@@ -1,6 +1,7 @@
 import sys
 from dataclasses import dataclass
 
+from user_interface.console import ConsoleInterface
 from verb import Verb
 
 sys.path.append('/media/serg/ostree/serg/Документы/расчет рациона питания/mathGame')
@@ -60,7 +61,9 @@ class GameConstructor:
         return game
 
     def words(self):
-        return Game(Verb(self.interface))
+        game = Game(Verb(self.interface))
+        game.game_class.choice_user_action = lambda action: ['*']
+        return game
 
     def run(self):
         game_dict = {
@@ -76,7 +79,14 @@ class GameConstructor:
 
 
 if __name__ == '__main__':
-    pass
+    game_settings = GameSettings(
+        game_name=GameName.arithmetic,
+        delayed_response="1",
+        max_steps_of_level="5",
+        entry_level="1"
+                                 )
+    game = GameConstructor(game_settings, ConsoleInterface())
+    game.run()
         # storage_entities = StorageEntities(
         #     date=end_time,
         #     time=delta_time,
