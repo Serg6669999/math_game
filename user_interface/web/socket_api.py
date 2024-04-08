@@ -1,5 +1,6 @@
 import logging
 import sys
+from typing import Dict
 sys.path.append(
     '/media/serg/ostree/serg/Документы/расчет рациона питания/mathGame')
 
@@ -20,11 +21,9 @@ def get_arithmetic_game_(message: str = "Разгони мозг"):
                            sync_mode=socketio.async_mode)
 
 
-user_answer = UserAnswer
-user_answer.message = ''
-
 
 class ClientEvents(Namespace):
+    user_answers: Dict[str, UserAnswer] = {}
 
     def on_connect(self):
         log(f"connect {request.sid}")
@@ -36,8 +35,11 @@ class ClientEvents(Namespace):
         print("start_game", request.cookies['cookie'], request.sid)
         server_event = ServerEvents(request.sid)
 
+        answer = UserAnswer()
+        self.user_answers[request.sid] = answer
+
         game = GameConstructor(GameSettings(**data['data']),
-                               WebInterface(server_event, user_answer))
+                               WebInterface(server_event, answer))
         game.run()
 
         # thread = threading.Thread(
@@ -54,8 +56,8 @@ class ClientEvents(Namespace):
         print("stop game", data)
 
     def on_user_answer(self, data):
-        user_answer.message = data['data']
-        print('on_user_answer', user_answer.message, request.sid)
+        self.user_answers[request.sid].message = data['data']
+        print('on_user_answer', self.user_answers[request.sid], request.sid)
 
 
 class ServerEvents:
@@ -63,7 +65,7 @@ class ServerEvents:
         self.socket_id = socket_id
 
     def send_message(self, message: str, show_message_time: float = None):
-        print('server_message', message)
+        print('server_message', message, self.socket_id)
         socketio.emit("server_message", {"data": message}, room=self.socket_id)
         if show_message_time is not None:
             socketio.sleep(show_message_time)

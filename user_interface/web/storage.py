@@ -3,10 +3,7 @@ class UserAnswer:
 
     @property
     def message(self) -> str:
-        text = self._message[:]
-        self._message = str()
-
-        return text
+        return self._message
 
     @message.setter
     def message(self, text: str):
