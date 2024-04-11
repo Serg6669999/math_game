@@ -10,7 +10,7 @@ def mark_time(func):
         start_time = datetime.datetime.now()
         func(*args, **kwargs)
         end_time = datetime.datetime.now()
-        delta_time = (end_time - start_time).total_seconds()
+        delta_time = (end_time - start_time).seconds
         return delta_time, end_time
 
     return wrapper
@@ -33,10 +33,21 @@ class GameRule(ABC):
 
     incorrect_answers = 0
 
+    def __get_user_task(self,
+                        numbers_for_calculations: List[int],
+                        math_action: str,
+                        arithmetic_number: int = '') -> str:
+        result = f" {math_action} ".join(map(str, numbers_for_calculations))
+        if not arithmetic_number == '':
+            result = f"{numbers_for_calculations} {math_action} {arithmetic_number}"
+        return result
+
+    @mark_time
     def _action_sequence_of_numbers(self, user_action, game_class,
                                     deferred_step: int = 1):
         self.send_message_to_user(vars(game_class))
-        time.sleep(1.1)
+        # socketio.sleep(5.1)
+        # TODO remove game_class
         sequence_of_numbers = game_class.get_random_pairs_of_numbers_with_math_action(
             user_action)
         show_message_time = getattr(game_class, 'show_message_time', None)
@@ -46,9 +57,9 @@ class GameRule(ABC):
         for i, (numbers_for_calculations_, math_action_) in enumerate(
                 sequence_of_numbers, start=1):
 
-            self.send_message_to_user(
-                f"{numbers_for_calculations_}, {math_action_} {arithmetic_number}",
-                show_message_time)
+            user_task = self.__get_user_task(numbers_for_calculations_, math_action_, arithmetic_number)
+
+            self.send_message_to_user(user_task, show_message_time)
             user_answer = self.get_user_answer()
 
             deferred_numbers_for_calculations.append(numbers_for_calculations_)
@@ -67,7 +78,7 @@ class GameRule(ABC):
             else:
                 self.incorrect_answers += 1
                 self.send_message_to_user(
-                    f"{numbers_for_calculations} - {user_answer} is false, true= {true_answer}")
+                    f"{user_answer} is false, true= {true_answer}")
                 sequence_of_numbers.append((numbers_for_calculations, math_action_))
                 self.get_user_answer()
 
@@ -75,15 +86,17 @@ class GameRule(ABC):
     def get_math_game(self, actions: Iterable[str], game_class,
                       deferred_step: int = 1):
         user_math_action = self.choice_user_action(actions)
-        while True:
+        is_game_active = game_class.interface_class_obj.user_answer.is_game_active
+        while is_game_active:
             game_class.incorrect_answers = 0
-            self._action_sequence_of_numbers(user_math_action, game_class,
+            delta_time, end_time = self._action_sequence_of_numbers(user_math_action, game_class,
                                              deferred_step)
-            message = f"incorrect_answers = {game_class.incorrect_answers}. " \
+            message = f"wrongs = {game_class.incorrect_answers}; " \
+                      f"{delta_time}sec; " \
                       f"Is next level? (yes/no)"
             self.send_message_to_user(message)
             user_answer = self.get_user_answer()
-            if user_answer == 'yes':
+            if user_answer.lower() == 'yes':
                 game_class.set_next_level()
 
 

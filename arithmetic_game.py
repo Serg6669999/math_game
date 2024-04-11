@@ -21,7 +21,6 @@ class MathAction(ArithmeticRules):
 
 class ArithmeticGame(GameRule):
 
-
     def __init__(self, interface_class):
         self.interface_class_obj = interface_class
         self.First_range_of_numbers = (1, 9)
@@ -43,9 +42,6 @@ class ArithmeticGame(GameRule):
 
     def get_random_pairs_of_numbers_with_math_action(self,
                                                      math_actions: List[str]):
-        # for data in self._get_random_pairs_of_numbers():
-        #     math_action = random.choice(math_actions)
-        #     yield data, math_action
         return [(data, random.choice(math_actions)) for data in
                 self._get_random_pairs_of_numbers()]
 
@@ -98,13 +94,13 @@ class FastArithmeticGame(ArithmeticGame):
         answer_number_list = list(map(int, findall(r"\d+", answer)))
         return answer_number_list == result_numbers_list, result_numbers_list
 
-    def _get_values(self):
+    def _get_values(self) -> List[int]:
         return [
             random.randint(*self.First_range_of_numbers)
             for i in range(self.level + 1)
         ]
 
-    def _get_random_pairs_of_numbers(self) -> list:
+    def _get_random_pairs_of_numbers(self) -> List[List[int]]:
         return [self._get_values() for i in range(1, self.max_steps)]
 
     def set_next_level(self):

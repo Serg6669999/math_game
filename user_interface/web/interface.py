@@ -20,14 +20,14 @@ class WebInterface(Interface):
                              show_message_time: float = None):
         self.server_events.send_message(str(message), show_message_time)
 
-    def await_answer_loop(self):
+    def _await_answer_loop(self):
         answer = self.user_answer.message
-        while answer == '':
+        while answer is None:
             socketio.sleep(0.1)
             answer = self.user_answer.message
         else:
-            self.user_answer.message = ''
+            self.user_answer.message = None
             return answer
 
     def get_user_answer(self) -> str:
-        return self.await_answer_loop()
+        return self._await_answer_loop()

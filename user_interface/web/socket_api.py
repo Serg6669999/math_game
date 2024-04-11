@@ -21,43 +21,33 @@ def get_arithmetic_game_(message: str = "Разгони мозг"):
                            sync_mode=socketio.async_mode)
 
 
-
 class ClientEvents(Namespace):
-    user_answers: Dict[str, UserAnswer] = {}
+    socket_id_user_answers: Dict[str, UserAnswer] = {}
 
     def on_connect(self):
         log(f"connect {request.sid}")
 
     def on_disconnect(self):
-        pass
+        self.on_stop_game()
 
     def on_start_game(self, data):
-        print("start_game", request.cookies['cookie'], request.sid)
+        print("start_game", request.sid)
         server_event = ServerEvents(request.sid)
 
-        answer = UserAnswer()
-        self.user_answers[request.sid] = answer
+        answer = UserAnswer(message=None, is_game_active=True)
+        self.socket_id_user_answers[request.sid] = answer
 
         game = GameConstructor(GameSettings(**data['data']),
                                WebInterface(server_event, answer))
         game.run()
 
-        # thread = threading.Thread(
-        #     target=run_(data['data'],server_event , user_answer),
-        #     name="request.sid",
-        #     # daemon=True
-        # )
-        # log(thread)
-        # log(f"thread {thread}")
-        # thread.start()
-        # thread.join()
-
-    def on_stop_game(self, data):
-        print("stop game", data)
+    def on_stop_game(self):
+        self.socket_id_user_answers[request.sid].is_game_active = False
+        print("stop game")
 
     def on_user_answer(self, data):
-        self.user_answers[request.sid].message = data['data']
-        print('on_user_answer', self.user_answers[request.sid], request.sid)
+        self.socket_id_user_answers[request.sid].message = data['data']
+        print('on_user_answer', self.socket_id_user_answers[request.sid], request.sid)
 
 
 class ServerEvents:
