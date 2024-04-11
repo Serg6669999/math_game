@@ -55,11 +55,43 @@ document.getElementById("stop").addEventListener("click", function (){
         stop_game(document)
     }
         );
+document.getElementById("ok").addEventListener("click", function (){
+        sent_user_answer(document);
+    let input_ = document.getElementById("user_answer_")
+      input_.value = ""
+    }
+        );
+document.getElementById("yes").addEventListener("click", function (){
+        send_user_answer("yes");
+    let input_ = document.getElementById("user_answer_")
+      input_.value = ""
+    }
+        );
+document.getElementById("del").addEventListener("click", function (){
+
+    let input_ = document.getElementById("user_answer_")
+      input_.value = input_.value.substring(0, input_.value.length - 1)
+    }
+        );
 
 document.addEventListener("keypress", function(event) {
-  if (event.keyCode === 13) {
+  if (event.keyCode === 13)  {
     sent_user_answer(document);
     let input_ = document.getElementById("user_answer_")
       input_.value = ""
   }
+});
+
+// press numbers
+const keys = document.querySelectorAll('.key');
+
+keys.forEach(key => {
+    key.addEventListener('click', () => {
+        const input = document.getElementById("user_answer_");
+        const current_value = input.value;
+        memory_game = get_data_for_start_game(document)
+        let addition = ""
+        if (memory_game.game_name === "Memory") {addition = " "}
+        input.value = current_value + key.textContent[0] + addition
+    });
 });

@@ -1,7 +1,7 @@
 const socket = io();
 
 socket.on('connect', function() {
-    socket.emit('connect_server', {data: 'I\'m connected!'});
+    socket.emit('connect_server');
 });
 
 socket.on('server_message', function (json) {
@@ -19,6 +19,6 @@ function start_game(body) {
     socket.emit('start_game', {data: body})
 }
 
-function socket_stop_game(body) {
-    socket.emit('stop_game', {data: body})
+function socket_stop_game() {
+    socket.emit('stop_game')
 }
