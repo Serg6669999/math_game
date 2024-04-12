@@ -29,7 +29,9 @@ class ClientEvents(Namespace):
         is_mobile = user_agent.is_mobile
         is_tablet = user_agent.is_tablet
         is_ps = user_agent.is_pc
-        log(f"connect {request.headers}")
+        is_devices = {is_mobile: "mobile", is_tablet: "tablet", is_ps: "ps"}
+        log(f"connect P-{is_ps} T-{is_tablet} M-{is_mobile}")
+        ServerEvents(request.sid).sent_service_message({"device": is_devices[True]})
 
     def on_disconnect(self):
         self.on_stop_game()
@@ -58,12 +60,15 @@ class ServerEvents:
     def __init__(self, socket_id):
         self.socket_id = socket_id
 
-    def send_message(self, message: str, show_message_time: float = None):
+    def sent_message_to_user(self, message: str or dict, show_message_time: float = None):
         print('server_message', message, self.socket_id)
         socketio.emit("server_message", {"data": message}, room=self.socket_id)
         if show_message_time is not None:
             socketio.sleep(show_message_time)
             socketio.emit("server_message", {"data": '-'}, room=self.socket_id)
+
+    def sent_service_message(self, message: str or dict):
+        socketio.emit("service_message", {"data": message}, room=self.socket_id)
 
 
 socketio.on_namespace(ClientEvents())

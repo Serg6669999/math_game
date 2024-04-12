@@ -1,13 +1,14 @@
 const socket = io();
 
-socket.on('connect', function() {
-    socket.emit('connect_server');
-});
-
 socket.on('server_message', function (json) {
     console.log("server_message")
     show_server_message(json.data)
+})
 
+socket.on('service_message', function (json) {
+    console.log("service_message", json.data)
+    handler_service_message(json.data)
+    console.log("settings", settings)
 })
 
 function send_user_answer(message) {

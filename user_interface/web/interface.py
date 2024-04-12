@@ -18,7 +18,7 @@ class WebInterface(Interface):
 
     def send_message_to_user(self, message: str,
                              show_message_time: float = None):
-        self.server_events.send_message(str(message), show_message_time)
+        self.server_events.sent_message_to_user(str(message), show_message_time)
 
     def _await_answer_loop(self):
         answer = self.user_answer.message

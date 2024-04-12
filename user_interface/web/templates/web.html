@@ -16,7 +16,7 @@
 <div class="display" id="dataDisplay">
         <button id="del" class="button" value="del"> <- </button>
         <label for="user_answer_"></label>
-        <input type="text" name="user_answer" id="user_answer_" placeholder="Answer" class="user_unswer_">
+        <input type="text" name="user_answer" id="user_answer_" placeholder="Answer" class="user_unswer_" pattern="[a-z]{4,8}" >
     <button id="yes" class="button" value="yes">YES</button>
     <button id="ok" class="button" value="ok">OK</button>
 
@@ -27,19 +27,32 @@
 <div class="container">
 
     <div class="keypad_left">
-        <div class="key" data-long-press-delay="200">1<sup>*</sup> </div>
-        <div class="key" data-long-press-delay="200">2<sup>+</sup></div>
-        <div class="key" data-long-press-delay="200">3<sup>-</sup></div>
-        <div class="key" data-long-press-delay="200">4<sup>/</sup></div>
-        <div class="key" data-long-press-delay="200">5<sup>**</sup></div>
+        <div class="key">1<sup>*</sup> </div>
+        <div class="key">2<sup>+</sup></div>
+        <div class="key">3<sup>-</sup></div>
+        <div class="key">4<sup>/</sup></div>
+        <div class="key">5<sup>**</sup></div>
     </div>
 
     <form id="games" name="games" class="choose_game">
                 <h2>Games</h2>
-            <label><input type="radio" value="Arithmetic" name="game" checked/>Arithmetic</label>
-            <label><input type="radio" value="Memory+Arithmetic" name="game"/>Memory+Arithmetic</label>
-            <label><input type="radio" value="Memory" name="game"/>Memory</label>
-            <label><input type="radio" value="Words" name="game"/>Words</label>
+            <label>Math action
+                <select id="math_action_A" name="math_action">
+                        <option>*</option>
+                        <option>+</option>
+                        <option>-</option>
+                        <option>/</option>
+                        <option>**</option>
+                    </select>
+            </label>
+            <label><input type="radio" value="Arithmetic" name="game_name" checked/>
+
+                Arithmetic</label>
+            <label><input type="radio" value="Memory+Arithmetic" name="game_name"/>
+
+                Memory+Arithmetic</label>
+            <label><input type="radio" value="Memory" name="game_name"/>Memory</label>
+            <label><input type="radio" value="Words" name="game_name"/>Words</label>
     </form>
 
         <div class="column">
@@ -81,8 +94,8 @@
 
         </div>
         <div class="keypad_right">
-        <div class="key" data-long-press-delay="200">6<sup>yes</sup></div>
-        <div class="key" data-long-press-delay="200">7<sup>no</sup></div>
+        <div class="key">6<sup>yes</sup></div>
+        <div class="key">7<sup>no</sup></div>
         <div class="key">8</div>
         <div class="key">9</div>
         <div class="key">0</div>
