@@ -1,8 +1,9 @@
 import re
-from typing import Iterable, List
+from typing import List
 
 from math_game.storage.Storage import File
 from math_game.business_rules import GameRule
+from settings import DIR_ROOT
 
 
 class Action:
@@ -32,19 +33,21 @@ class Translate:
         pass
 
 
-class Verb(GameRule):
+class Words(GameRule):
     level = 1
     words_in_level = 10
-    file_path = "/media/serg/ostree/serg/Документы/книги/english/dictionary/"
+    file_path = f"{DIR_ROOT}/math_game/storage/english_words/"
     file_name = "without_transcriptions_verb.csv"
     # file_name = "body.csv"
     file_name = "duolingvo.csv"
     # file_name = "test.csv"
 
     def __init__(self, interface_class):
+        super().__init__()
         self.interface_class_obj = interface_class
         self._words_list = self._get_words_list()
         self.__file.close()
+        self.math_action = "*"
 
     def set_level(self, level):
         self.level = level
@@ -54,11 +57,13 @@ class Verb(GameRule):
         self.__file.open()
         return self.__file.read()
 
-    def choice_user_action(self, actions: Iterable[str]) -> List[str]:
-        return self.interface_class_obj.choice_user_action(actions)
-
     def get_user_answer(self) -> str:
         return self.interface_class_obj.get_user_answer()
+
+    def get_user_task(self, numbers_for_calculations: List[int],
+                      math_action: str,
+                      ) -> str:
+        return f"{numbers_for_calculations}"
 
     def send_message_to_user(self, message: str,
                              show_message_time: float = None):

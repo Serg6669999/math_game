@@ -1,6 +1,6 @@
 import random
 from re import findall
-from typing import List, Tuple, Iterable
+from typing import List, Tuple
 from math_game.business_rules import GameRule, ArithmeticRules
 
 
@@ -19,9 +19,10 @@ class MathAction(ArithmeticRules):
         return action_dict
 
 
-class ArithmeticGame(GameRule):
+class Arithmetic(GameRule):
 
     def __init__(self, interface_class):
+        super().__init__()
         self.interface_class_obj = interface_class
         self.First_range_of_numbers = (1, 9)
         self.Second_range_of_numbers = (1, 9)
@@ -50,8 +51,10 @@ class ArithmeticGame(GameRule):
         return self.interface_class_obj.send_message_to_user(message,
                                                              show_message_time)
 
-    def choice_user_action(self, actions: Iterable[str]) -> List[str]:
-        return self.interface_class_obj.choice_user_action(actions)
+    def get_user_task(self, numbers_for_calculations: List[int],
+                      math_action: str,
+                      ) -> str:
+        return f" {math_action} ".join(map(str, numbers_for_calculations))
 
     def get_user_answer(self) -> str:
         return self.interface_class_obj.get_user_answer()
@@ -79,9 +82,11 @@ class ArithmeticGame(GameRule):
                                             self.Second_range_of_numbers]
 
 
-class FastArithmeticGame(ArithmeticGame):
-    First_range_of_numbers = (1, 9)
-    arithmetic_number = 2
+class MemoryArithmetic(Arithmetic):
+    def __init__(self, interface_class):
+        super().__init__(interface_class)
+        self.First_range_of_numbers = (1, 9)
+        self.arithmetic_number = 2
 
     def check_answer(self, math_action: str, answer: str,
                      data: Tuple[int, int]):
@@ -107,3 +112,20 @@ class FastArithmeticGame(ArithmeticGame):
         if self.incorrect_answers < 3:
             self.level += 1
             self.show_message_time = self.level * 0.2835
+
+    def get_user_task(self, numbers_for_calculations: List[int],
+                      math_action: str,
+                      ) -> str:
+        return f"{numbers_for_calculations} {math_action} {self.arithmetic_number}"
+
+
+class Memory(MemoryArithmetic):
+    def __init__(self, interface_class):
+        super().__init__(interface_class)
+        self.arithmetic_number = 1
+        self.math_action = '*'
+
+    def get_user_task(self, numbers_for_calculations: List[int],
+                      math_action: str,
+                      ) -> str:
+        return f"{numbers_for_calculations}"

@@ -1,19 +1,19 @@
-import logging
 import sys
 from typing import Dict
-sys.path.append(
-    '/media/serg/ostree/serg/Документы/расчет рациона питания/mathGame')
+
+from settings import DIR_ROOT, log
+
+sys.path.append(DIR_ROOT)
 
 from flask_socketio import Namespace
 from flask import render_template, request
+from user_agents import parse
 
 from user_interface.web.interface import WebInterface
 from user_interface.web.storage import UserAnswer
 from math_game.user_interface.web.socket_server import app, socketio
 from math_game.run import GameConstructor, GameSettings
 
-logging.basicConfig(level="INFO", format="%(processName)s %(threadName)s %(message)s")
-log = logging.info
 
 @app.route('/')
 def get_arithmetic_game_(message: str = "Разгони мозг"):
@@ -25,7 +25,11 @@ class ClientEvents(Namespace):
     socket_id_user_answers: Dict[str, UserAnswer] = {}
 
     def on_connect(self):
-        log(f"connect {request.sid}")
+        user_agent = parse(request.user_agent.string)
+        is_mobile = user_agent.is_mobile
+        is_tablet = user_agent.is_tablet
+        is_ps = user_agent.is_pc
+        log(f"connect {request.headers}")
 
     def on_disconnect(self):
         self.on_stop_game()

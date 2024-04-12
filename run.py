@@ -1,12 +1,16 @@
 import sys
 from dataclasses import dataclass
 
+from settings import DIR_ROOT
 from user_interface.console import ConsoleInterface
-from verb import Verb
+from words import Words
 
-sys.path.append('/media/serg/ostree/serg/Документы/расчет рациона питания/mathGame')
+sys.path.append(DIR_ROOT)
 
-from math_game.arithmetic_game import FastArithmeticGame, MathAction, ArithmeticGame
+from math_game.arithmetic_game import (
+    MemoryArithmetic,
+    Arithmetic,
+    Memory)
 
 
 class GameName:
@@ -19,6 +23,7 @@ class GameName:
 @dataclass
 class GameSettings:
     game_name: str
+    math_action: str
     delayed_response: str or int
     max_steps_of_level: str or int
     entry_level: str or int
@@ -33,13 +38,8 @@ class Game:
     def __init__(self, game_class):
         self.game_class = game_class
 
-    def start(self, deferred_step: int = 1):
-        math_actions = ", ".join(MathAction((1, 1)).get_arithmetic_actions().keys())
-        delta_time, end_time = self.game_class.get_math_game(
-            math_actions,
-            self.game_class,
-            deferred_step
-        )
+    def start(self):
+        delta_time, end_time = self.game_class.get_math_game(self.game_class)
         return delta_time, end_time
 
 
@@ -48,34 +48,19 @@ class GameConstructor:
         self.interface = interface
         self.settings = settings
 
-    def arithmetic(self):
-        return Game(ArithmeticGame(self.interface))
-
-    def memory_arithmetic(self):
-        return Game(FastArithmeticGame(self.interface))
-
-    def memory(self):
-        game = Game(FastArithmeticGame(self.interface))
-        game.game_class.arithmetic_number = 1
-        game.game_class.choice_user_action = lambda action: ['*']
-        return game
-
-    def words(self):
-        game = Game(Verb(self.interface))
-        game.game_class.choice_user_action = lambda action: ['*']
-        return game
-
     def run(self):
         game_dict = {
-            GameName.arithmetic: self.arithmetic(),
-            GameName.memory_arithmetic: self.memory_arithmetic(),
-            GameName.memory: self.memory(),
-            GameName.words: self.words()
+            GameName.arithmetic: Game(Arithmetic(self.interface)),
+            GameName.memory_arithmetic: Game(MemoryArithmetic(self.interface)),
+            GameName.memory: Game(Memory(self.interface)),
+            GameName.words: Game(Words(self.interface))
         }
         game_obj = game_dict[self.settings.game_name]
+        game_obj.game_class.math_action = self.settings.math_action
         game_obj.game_class.max_steps = self.settings.max_steps_of_level
         game_obj.game_class.level = self.settings.entry_level
-        game_obj.start(self.settings.delayed_response)
+        game_obj.game_class.deferred_step = self.settings.delayed_response
+        game_obj.start()
 
 
 if __name__ == '__main__':
@@ -84,16 +69,15 @@ if __name__ == '__main__':
         delayed_response="1",
         max_steps_of_level="5",
         entry_level="1"
-                                 )
+    )
     game = GameConstructor(game_settings, ConsoleInterface())
     game.run()
-        # storage_entities = StorageEntities(
-        #     date=end_time,
-        #     time=delta_time,
-        #     incorrect_answers=arithmetic_game.incorrect_answers,
-        #     arithmetic_data=(arithmetic_game.First_range_of_numbers,
-        #                      arithmetic_game.Second_range_of_numbers)
-        #    )
-        # Storage(storage_entities).save_to_csv_file("stats.csv")
-        # arithmetic_game.send_message_to_user(f"{storage_entities.__dict__}")
-
+    # storage_entities = StorageEntities(
+    #     date=end_time,
+    #     time=delta_time,
+    #     incorrect_answers=arithmetic_game.incorrect_answers,
+    #     arithmetic_data=(arithmetic_game.First_range_of_numbers,
+    #                      arithmetic_game.Second_range_of_numbers)
+    #    )
+    # Storage(storage_entities).save_to_csv_file("stats.csv")
+    # arithmetic_game.send_message_to_user(f"{storage_entities.__dict__}")
