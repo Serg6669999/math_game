@@ -25,7 +25,8 @@ function get_data_for_start_game(document) {
         "math_action": document.games.math_action.value,
         "delayed_response": delayed_response,
         "max_steps_of_level": max_steps_of_level,
-        "entry_level": entry_level
+        "entry_level": entry_level,
+        "words": document.games.words.value
     }
 
 }
@@ -129,7 +130,7 @@ keys.forEach(key => {
         const current_value = input.value;
         memory_game = get_data_for_start_game(document)
         let addition = ""
-        if (memory_game.game_name === "Memory") {addition = " "}
+        if (memory_game.game_name === "Memory") {addition = "_"}
         input.value = current_value + key.textContent[0] + addition
     });
 });

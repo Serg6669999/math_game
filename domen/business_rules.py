@@ -22,7 +22,16 @@ class GameRule(ABC):
         self.incorrect_answers = 0
         self.show_message_time = None
         self.deferred_step = 1
-        self.math_action = ""
+        self.__math_action = ""
+
+    @property
+    def math_action(self):
+        return self.__math_action
+
+    @math_action.setter
+    def math_action(self, text: str):
+        if self.__math_action == "":
+            self.__math_action = text
 
     @abstractmethod
     def send_message_to_user(self, message: str,

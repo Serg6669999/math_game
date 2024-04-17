@@ -1,9 +1,9 @@
 import sys
-from dataclasses import dataclass
 
+from domen.entity import GameSettings, GameName
 from settings import DIR_ROOT
 from user_interface.console import ConsoleInterface
-from words import Words
+from words_game import Words
 
 sys.path.append(DIR_ROOT)
 
@@ -13,36 +13,6 @@ from math_game.arithmetic_game import (
     Memory)
 
 
-class GameName:
-    arithmetic = 'Arithmetic'
-    memory_arithmetic = 'Memory+Arithmetic'
-    memory = 'Memory'
-    words = 'Words'
-
-
-@dataclass
-class GameSettings:
-    game_name: str
-    math_action: str
-    delayed_response: str or int
-    max_steps_of_level: str or int
-    entry_level: str or int
-
-    def __post_init__(self):
-        self.delayed_response = int(self.delayed_response)
-        self.max_steps_of_level = int(self.max_steps_of_level)
-        self.entry_level = int(self.entry_level)
-
-
-class Game:
-    def __init__(self, game_class):
-        self.game_class = game_class
-
-    def start(self):
-        delta_time, end_time = self.game_class.get_math_game(self.game_class)
-        return delta_time, end_time
-
-
 class GameConstructor:
     def __init__(self, settings: GameSettings, interface):
         self.interface = interface
@@ -50,17 +20,20 @@ class GameConstructor:
 
     def run(self):
         game_dict = {
-            GameName.arithmetic: Game(Arithmetic(self.interface)),
-            GameName.memory_arithmetic: Game(MemoryArithmetic(self.interface)),
-            GameName.memory: Game(Memory(self.interface)),
-            GameName.words: Game(Words(self.interface))
+            GameName.arithmetic: Arithmetic,
+            GameName.memory_arithmetic: MemoryArithmetic,
+            GameName.memory: Memory,
+            GameName.words: Words
         }
-        game_obj = game_dict[self.settings.game_name]
-        game_obj.game_class.math_action = self.settings.math_action
-        game_obj.game_class.max_steps = self.settings.max_steps_of_level
-        game_obj.game_class.level = self.settings.entry_level
-        game_obj.game_class.deferred_step = self.settings.delayed_response
-        game_obj.start()
+        game_ = game_dict[self.settings.game_name]
+        game_obj = game_(self.interface)
+        game_obj.math_action = self.settings.math_action
+        game_obj.max_steps = self.settings.max_steps_of_level
+        game_obj.level = self.settings.entry_level
+        game_obj.deferred_step = self.settings.delayed_response
+        game_obj.words = self.settings.words
+
+        game_obj.get_math_game(game_obj)
 
 
 if __name__ == '__main__':
@@ -72,12 +45,3 @@ if __name__ == '__main__':
     )
     game = GameConstructor(game_settings, ConsoleInterface())
     game.run()
-    # storage_entities = StorageEntities(
-    #     date=end_time,
-    #     time=delta_time,
-    #     incorrect_answers=arithmetic_game.incorrect_answers,
-    #     arithmetic_data=(arithmetic_game.First_range_of_numbers,
-    #                      arithmetic_game.Second_range_of_numbers)
-    #    )
-    # Storage(storage_entities).save_to_csv_file("stats.csv")
-    # arithmetic_game.send_message_to_user(f"{storage_entities.__dict__}")

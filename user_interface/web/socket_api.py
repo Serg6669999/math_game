@@ -37,7 +37,7 @@ class ClientEvents(Namespace):
         self.on_stop_game()
 
     def on_start_game(self, data):
-        print("start_game", request.sid)
+        log("start_game", request.sid)
         server_event = ServerEvents(request.sid)
 
         answer = UserAnswer(message=None, is_game_active=True)
@@ -49,11 +49,11 @@ class ClientEvents(Namespace):
 
     def on_stop_game(self):
         self.socket_id_user_answers[request.sid].is_game_active = False
-        print("stop game")
+        log("stop game")
 
     def on_user_answer(self, data):
         self.socket_id_user_answers[request.sid].message = data['data']
-        print('on_user_answer', self.socket_id_user_answers[request.sid], request.sid)
+        log('on_user_answer', self.socket_id_user_answers[request.sid], request.sid)
 
 
 class ServerEvents:
@@ -61,7 +61,7 @@ class ServerEvents:
         self.socket_id = socket_id
 
     def sent_message_to_user(self, message: str or dict, show_message_time: float = None):
-        print('server_message', message, self.socket_id)
+        log('server_message', message, self.socket_id)
         socketio.emit("server_message", {"data": message}, room=self.socket_id)
         if show_message_time is not None:
             socketio.sleep(show_message_time)
@@ -74,5 +74,5 @@ class ServerEvents:
 socketio.on_namespace(ClientEvents())
 
 if __name__ == '__main__':
-    print("start")
-    socketio.run(app)
+    log("start")
+    socketio.run(app, host='0.0.0.0', port=5000)

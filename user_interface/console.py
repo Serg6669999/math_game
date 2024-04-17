@@ -2,6 +2,8 @@ import time
 from typing import Iterable, List, Tuple
 import re
 
+from settings import log
+
 
 class ConsoleInterface:
     def choice_user_action(self, math_actions: Iterable[str]) -> List[str]:
@@ -11,11 +13,11 @@ class ConsoleInterface:
     def send_message_to_user(self, message: str, show_message_time: float = None):
 
         if show_message_time:
-            print(message, end='')
+            log(message, end='')
             time.sleep(show_message_time)
-            print('\r', '')
+            log('\r', '')
         else:
-            print(message)
+            log(message)
 
     def extract_from_text_(self, regular: str, text: str):
         return re.search(f'{regular}', text).group()

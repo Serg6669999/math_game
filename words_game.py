@@ -2,8 +2,8 @@ import re
 from typing import List
 
 from math_game.storage.Storage import File
-from math_game.business_rules import GameRule
-from settings import DIR_ROOT
+from domen.business_rules import GameRule
+from settings import DIR_ROOT, log
 
 
 class Action:
@@ -34,35 +34,39 @@ class Translate:
 
 
 class Words(GameRule):
-    level = 1
-    words_in_level = 10
-    file_path = f"{DIR_ROOT}/math_game/storage/english_words/"
-    file_name = "without_transcriptions_verb.csv"
-    # file_name = "body.csv"
-    file_name = "duolingvo.csv"
-    # file_name = "test.csv"
-
     def __init__(self, interface_class):
         super().__init__()
         self.interface_class_obj = interface_class
-        self._words_list = self._get_words_list()
-        self.__file.close()
-        self.math_action = "*"
+        self.level = 1
+        self.max_steps = 10
+        self.__file_path = f"{DIR_ROOT}/math_game/storage/english_words/"
+        self._words = ""
+        self._words_list = list
+
+    @property
+    def words(self):
+        return self._words
+
+    @words.setter
+    def words(self, text: str):
+        self._words = text
 
     def set_level(self, level):
         self.level = level
 
-    def _get_words_list(self):
-        self.__file = File(self.file_path, self.file_name)
-        self.__file.open()
-        return self.__file.read()
+    def _get_words_list(self) -> list[dict]:
+        file_name = f"{self.words}.csv"
+        file = File(self.__file_path, file_name)
+        file.open()
+        result = file.read()[:]
+        file.close()
+        return result
 
     def get_user_answer(self) -> str:
         return self.interface_class_obj.get_user_answer()
 
     def get_user_task(self, numbers_for_calculations: List[int],
-                      math_action: str,
-                      ) -> str:
+                      math_action: str) -> str:
         return f"{numbers_for_calculations}"
 
     def send_message_to_user(self, message: str,
@@ -71,13 +75,15 @@ class Words(GameRule):
                                                              show_message_time)
 
     def check_answer(self, action: str, answer: str, ru_word: str):
-        _answer = [" ".join(re.findall(r"\w+", answer))]
+        _answer = (re.findall(r"\w+", answer))
         true_answer = Translate(self._words_list).ru_en(ru_word)
+        log(_answer, type(_answer), true_answer, type(true_answer))
         return _answer == true_answer, true_answer
 
     def get_random_pairs_of_numbers_with_math_action(self, action):
-        first_index = self.words_in_level * (self.level - 1)
-        second_index = self.words_in_level * self.level
+        self._words_list = self._get_words_list()
+        first_index = self.max_steps * (self.level - 1)
+        second_index = self.max_steps * self.level
         level_words_list = self._words_list[first_index:second_index]
         return [(list(word.values())[0], action) for word in level_words_list]
 

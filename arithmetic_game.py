@@ -1,7 +1,7 @@
 import random
 from re import findall
 from typing import List, Tuple
-from math_game.business_rules import GameRule, ArithmeticRules
+from domen.business_rules import GameRule, ArithmeticRules
 
 
 class MathAction(ArithmeticRules):
