@@ -7,5 +7,7 @@ DIR_ROOT = os.path.dirname(
         os.path.abspath(__file__)
     )
 )
-logging.basicConfig(level="INFO", format="%(processName)s %(threadName)s %(message)s")
+
+STATS_FILE = f"{DIR_ROOT}/math_game/storage/stats/stats.csv"
+logging.basicConfig(level="INFO", format="%(module)s %(lineno)d %(processName)s %(threadName)s %(message)s")
 log = logging.info

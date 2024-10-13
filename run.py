@@ -32,8 +32,7 @@ class GameConstructor:
         game_obj.level = self.settings.entry_level
         game_obj.deferred_step = self.settings.delayed_response
         game_obj.words = self.settings.words
-
-        game_obj.get_math_game(game_obj)
+        game_obj.get_math_game()
 
 
 if __name__ == '__main__':
