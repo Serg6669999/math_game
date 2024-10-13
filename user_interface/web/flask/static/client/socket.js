@@ -10,6 +10,13 @@ socket.on('service_message', function (json) {
     handler_service_message(json.data)
     console.log("settings", settings)
 })
+socket.on('level', function (json) {
+    show_level(json.data)
+})
+
+socket.on('chart', function (json) {
+    get_chart(json)
+})
 
 function send_user_answer(message) {
     console.log("socket user_answer")

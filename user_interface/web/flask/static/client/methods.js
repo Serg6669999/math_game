@@ -1,20 +1,3 @@
-function httpGet(path, body)
-{
-
-    let url = "http://localhost:5000/"
-
-    const options = {
-        headers: {"Content-Type":"application/json"},
-        method: "POST",
-        body: JSON.stringify( body )
-        };
-    fetch( url + path, options )
-        .then( response => response.json() )
-        .then( response => {
-            // Do something with response.
-        } );
-}
-
 function get_data_for_start_game(document) {
 
     let delayed_response = document.getElementById("delayed_response").value;
@@ -39,6 +22,9 @@ function stop_game(document) {
 function show_server_message(server_message) {
     document.getElementById('message_for_user').innerHTML = server_message
 
+}
+function show_level(level){
+    document.getElementById('level').innerHTML = "lvl " + level
 }
 
 function sent_user_answer(document) {
@@ -80,9 +66,10 @@ class ClickElement {
 
         document.getElementById("start").addEventListener("click", function (){
             let body = get_data_for_start_game(document)
-                start_game(body)
-                console.log("click settings", settings.deviceType, this.device_type)
+            start_game(body)
+            console.log("click settings", settings.deviceType, this.device_type)
             this.action.user_answer_focus[settings.deviceType]()
+            document.getElementById("user_answer_").value = ""
             }.bind(this)
                 );
 
@@ -109,10 +96,10 @@ class ClickElement {
 }}
 new ClickElement(settings).get()
 
-document.getElementById("stop").addEventListener("click", function (){
-        stop_game(document)
-    }
-        );
+document.getElementById("stats").addEventListener("click", function () {
+    window.location.href = "stats";
+});
+
 document.addEventListener("keypress", function(event) {
   if (event.keyCode === 13)  {
     sent_user_answer(document);
@@ -133,4 +120,17 @@ keys.forEach(key => {
         if (memory_game.game_name === "Memory") {addition = "_"}
         input.value = current_value + key.textContent[0] + addition
     });
+});
+
+
+const openMemoryMatrix = document.getElementById('memoryMatrix');
+const closePopupButton = document.getElementById('closePopup');
+const popupContainer = document.getElementById('popupContainer');
+
+openMemoryMatrix.addEventListener('click', function() {
+  popupContainer.style.display = 'block';
+});
+
+closePopupButton.addEventListener('click', function() {
+  popupContainer.style.display = 'none';
 });

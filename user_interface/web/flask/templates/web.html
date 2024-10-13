@@ -12,7 +12,16 @@
 
 </head>
 <body class="body">
-<h1 id="message_for_user">{{ data }}</h1>
+
+<div id="popupContainer" class="popup-container">
+  <span class="close" id="closePopup">&times;</span>
+  <iframe id="popupIframe" src="https://ttitto.github.io"></iframe>
+</div>
+
+<div id="message" class="message">
+    <div id="div2"><h2 id="level"></h2></div>
+    <div id="div1"><h1 id="message_for_user">{{ data }}</h1></div>
+</div>
 <div class="display" id="dataDisplay">
         <button id="del" class="button" value="del"> <- </button>
         <label for="user_answer_"></label>
@@ -73,12 +82,15 @@
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
+                        <option>4</option>
                     </select>
                 </div>
                 <div class="setting">
                     <span>Max steps of level:</span>
                     <select id="max_steps_of_level">
                         <option>5</option>
+                        <option>7</option>
+                        <option>8</option>
                         <option>10</option>
                         <option>15</option>
                     </select>
@@ -99,18 +111,23 @@
 
             </div>
             <button id="start" class="button" value="start" name="12">Start</button>
-            <button id="stop" class="button" value="stop">Stop</button>
+            <button id="stats" class="button" value="stats">Stats</button>
 
         </div>
         <div class="keypad_right">
         <div class="key">6<sup>yes</sup></div>
-        <div class="key">7<sup>no</sup></div>
+        <div class="key">7<sup><n></n>o</sup></div>
         <div class="key">8</div>
         <div class="key">9</div>
         <div class="key">0</div>
         <div class="key">_</div>
         </div>
     </div>
+<form method=post enctype=multipart/form-data action="/save">
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+<button id="memoryMatrix">Memory Matrix</button>
 <script type="text/javascript" src="../static/client/methods.js"></script>
 </body>
 </html>

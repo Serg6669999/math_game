@@ -1,8 +1,21 @@
-h1 {
-    text-align: center;
+
+.message{
+    display: flex;
+    justify-content: space-between;
+}
+#div1 {
+    margin: 0 auto;
+}
+#div2 {
+    text-align: left;
+    color: #951395;
 }
 .body{
     width: auto;
+    /*background-image: url('image/sky.webp');*/
+    background-size: cover; /* Растягивает изображение на весь экран */
+    background-repeat: no-repeat; /* Запрещает повторение изображения */
+    background-attachment: fixed; /* Фиксирует изображение на месте при прокрутке */
 }
 .keypad_left {
         /*display: flex;*/
@@ -52,6 +65,7 @@ h1 {
 }
 
 .button {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     padding: 10px 20px;
     margin: 15px;
     background-color: #007bff;
@@ -101,4 +115,27 @@ h1 {
 
 .button:hover {
     background-color: #0056b3;
+}
+
+.popup-container {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #af8080;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+}
+
+iframe {
+  width: 700px;
+  height: 500px;
 }
