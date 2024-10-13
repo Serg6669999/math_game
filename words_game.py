@@ -1,6 +1,7 @@
 import re
 from typing import List
 
+from domen.entity import GameName
 from math_game.storage.Storage import File
 from domen.business_rules import GameRule
 from settings import DIR_ROOT, log
@@ -65,19 +66,31 @@ class Words(GameRule):
     def get_user_answer(self) -> str:
         return self.interface_class_obj.get_user_answer()
 
+    def get_game_name(self) -> GameName:
+        return GameName.words
+
     def get_user_task(self, numbers_for_calculations: List[int],
                       math_action: str) -> str:
         return f"{numbers_for_calculations}"
+
+    def send_level_to_user(self, level: int):
+        self.interface_class_obj.send_level_to_user(level)
 
     def send_message_to_user(self, message: str,
                              show_message_time: float = None):
         return self.interface_class_obj.send_message_to_user( message,
                                                              show_message_time)
 
+    def show_wrong_char(self, answer: str, true_answer: str):
+        for i, char in enumerate(true_answer):
+            pass
+
     def check_answer(self, action: str, answer: str, ru_word: str):
-        _answer = (re.findall(r"\w+", answer))
-        true_answer = Translate(self._words_list).ru_en(ru_word)
-        log(_answer, type(_answer), true_answer, type(true_answer))
+        _answer = answer.split(", ")
+        _true_answer = Translate(self._words_list).ru_en(ru_word)
+        log(f"_true_answer = {_true_answer}")
+        true_answer = _true_answer
+        log(f"{_answer}, {type(_answer)}, {true_answer}, {type(true_answer)}")
         return _answer == true_answer, true_answer
 
     def get_random_pairs_of_numbers_with_math_action(self, action):
