@@ -1,7 +1,7 @@
 from typing import Iterable, List
 
 from math_game.user_interface.base import Interface
-from user_interface.web.socket_server import socketio
+from user_interface.web.flask.socket_server import socketio
 
 
 class WebInterface(Interface):
@@ -16,9 +16,12 @@ class WebInterface(Interface):
         answer = self.get_user_answer()
         return answer.split(",")
 
+    def send_level_to_user(self, level: int):
+        self.server_events.send_level_to_user(level)
+
     def send_message_to_user(self, message: str,
                              show_message_time: float = None):
-        self.server_events.sent_message_to_user(str(message), show_message_time)
+        self.server_events.send_message_to_user(str(message), show_message_time)
 
     def _await_answer_loop(self):
         answer = self.user_answer.message
