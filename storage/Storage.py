@@ -1,15 +1,24 @@
+import os
 import csv
 import dataclasses
+import datetime
 from dataclasses import dataclass
 from typing import List
 
+from domen.entity import GameName
+
 
 @dataclass
-class StorageEntities:
+class GameStatsEntities:
+    game_name: GameName
+    level: int
+    time: str
+    incorrect_answers: int
+    math_action: str
     date: str = None
-    time: str = None
-    incorrect_answers: int = None
-    arithmetic_data: tuple = None
+
+    def __post_init__(self):
+        self.date = datetime.datetime.now().strftime("%d-%m-%y %H:%M")
 
     @classmethod
     def get_field_names(cls) -> List[str]:
@@ -18,13 +27,13 @@ class StorageEntities:
 
 
 class Storage:
-    def __init__(self, data: StorageEntities):
+    def __init__(self, data: GameStatsEntities):
         self.data = data
 
     def save_to_csv_file(self, file_name: str):
         import csv
         with open(file_name, mode="a+", encoding='utf-8') as w_file:
-            title = StorageEntities.get_field_names()
+            title = GameStatsEntities.get_field_names()
             file_writer = csv.DictWriter(w_file, delimiter=",",
                                          lineterminator="\r",
                                          fieldnames=title)
@@ -44,7 +53,6 @@ class File:
     def read(self) -> List[dict]:
         return list(csv.DictReader(self.file))
 
-
     def close(self):
         return self.file.close()
 
@@ -54,3 +62,9 @@ class File:
             dict_writer = csv.DictWriter(file, field_names_list)
             dict_writer.writeheader()
             dict_writer.writerows(data)
+
+
+class FileP(File):
+    def __init__(self, path_with_file_name: str):
+        path, self.file_name = os.path.split(path_with_file_name)
+        self.path = path + '/'

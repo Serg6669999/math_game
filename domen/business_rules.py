@@ -3,7 +3,9 @@ from abc import ABC, abstractmethod
 from typing import List, Tuple
 import math
 
-from settings import log
+from domen.entity import GameName
+from settings import log, STATS_FILE
+from storage.Storage import GameStatsEntities, Storage
 
 
 def mark_time(func):
@@ -22,6 +24,7 @@ class GameRule(ABC):
         self.incorrect_answers = 0
         self.show_message_time = None
         self.deferred_step = 1
+        self.level = 1
         self.__math_action = ""
 
     @property
@@ -33,9 +36,27 @@ class GameRule(ABC):
         if self.__math_action == "":
             self.__math_action = text
 
+    def __save_game_stats(self, time, game_name):
+        game_stats = GameStatsEntities(
+            game_name=game_name,
+            level=self.level,
+            time=time,
+            incorrect_answers=self.incorrect_answers,
+            math_action=self.math_action
+        )
+        Storage(game_stats).save_to_csv_file(file_name=STATS_FILE)
+
+    @abstractmethod
+    def get_game_name(self) -> GameName:
+        pass
+
     @abstractmethod
     def send_message_to_user(self, message: str,
                              show_message_time: float = None):
+        pass
+
+    @abstractmethod
+    def send_level_to_user(self, level: int):
         pass
 
     @abstractmethod
@@ -65,6 +86,7 @@ class GameRule(ABC):
 
     @mark_time
     def _action_sequence_of_numbers(self, user_action):
+        self.send_level_to_user(self.level)
 
         sequence_of_numbers = self.get_random_pairs_of_numbers_with_math_action(
             user_action)
@@ -88,9 +110,8 @@ class GameRule(ABC):
             maybe_answer_true, true_answer = self.check_answer(
                 math_action_, user_answer, numbers_for_calculations)
 
-            if maybe_answer_true:
-                self.send_message_to_user("ok")
-            else:
+            if not maybe_answer_true:
+
                 self.incorrect_answers += 1
                 self.send_message_to_user(
                     f"{user_answer} is false, true= {true_answer}")
@@ -98,17 +119,16 @@ class GameRule(ABC):
                 self.get_user_answer()
 
     @mark_time
-    def get_math_game(self, game_class):
-        # TODO remove game_class
-        log(f"{vars(game_class)}")
-        is_game_active = game_class.interface_class_obj.user_answer.is_game_active
-        while is_game_active:
+    def get_math_game(self):
+        log(f"{vars()}")
+        while True:
             self.incorrect_answers = 0
             delta_time, end_time = self._action_sequence_of_numbers(self.math_action)
             message = f"wrongs = {self.incorrect_answers}; " \
                       f"{delta_time}sec; " \
                       f"Is next level? (yes/no)"
             self.send_message_to_user(message)
+            self.__save_game_stats(time=delta_time, game_name=self.get_game_name())
             user_answer = self.get_user_answer()
             if user_answer.lower() == 'yes':
                 self.set_next_level()

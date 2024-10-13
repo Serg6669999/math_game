@@ -1,4 +1,3 @@
-translate,word
 поблизости,nearby
 кафе,cafe
 брат,brother
@@ -17,15 +16,14 @@ translate,word
 вперед,ahead
 "прямо вперед",straight ahead
 змея,snake
-маленький,littel
+маленький,little
 футбол,soccer
 извините,sorry
 добрый,kind
 ужин,dinner
 удачливый,lucky
 извини,sorry
-добрый,kind
-действительно,realy
+действительно,really
 понимать,understand
 часто,often
 плавать,swim
@@ -45,39 +43,44 @@ translate,word
 танцы,dances
 муж,husband
 сосед,neighbour
-appointment
-thursday
-sunday
-tomorrow
-later
-walk
-difficult
-mistake
-still
-wrong
-quickly
-watches
-passport
-tourist
-juice
-tomato
-tomato juice
-boarding pass
-laptop
-airport
-charge
-boring
-strange
-flight
-carry-on
-heavy
-ugly
-boarding pass
-on time
-magazine
-blanket
-seat
-excited
-nervous
-term
-expensive
+встреча,appointment
+четверг,thursday
+воскресенье,sunday
+завтра,tomorrow
+позже,later
+гулять,walk
+трудный,difficult
+ошибка,mistake
+по-прежнему,still
+неправильный,wrong
+быстро,quickly
+часы,watches
+паспорт,passport
+турист,tourist
+сок,juice
+помидор,tomato
+томатный сок,tomato juice
+посадочный талон,boarding pass
+ноутбук,laptop
+аэропорт,airport
+зарядка,charge
+скучный,boring
+странный,strange
+рейс,flight
+ручная кладь,carry-on
+тяжелый,heavy
+уродливый,ugly
+посадочный талон,boarding pass
+вовремя,on time
+журнал,magazine
+одеяло,blanket
+место,seat
+взволнованный,excited
+нервный,nervous
+срок,term
+дорогой,expensive
+красивый,beautiful
+скучать,miss
+same
+бронь,reservation
+room
